@@ -94,8 +94,8 @@ network.draw(ctx)
 class Network {
   constructor (layers) {
     this.layers = layers.map(neurons => new __WEBPACK_IMPORTED_MODULE_0__Layer__["a" /* default */](neurons))
-    this.spacingX = 200
-    this.spacingY = 100
+    this.spacingX = 300
+    this.spacingY = 150
 
     this.layers.forEach((layer, index) => {
       if (this.layers[index + 1]) {
@@ -109,7 +109,7 @@ class Network {
   }
 
   draw (ctx) {
-    ctx.translate(-this.spacingX * (this.layers.length / 2), 0)
+    ctx.translate(-this.spacingX * this.layers.length / 2, 0)
 
     this.layers.forEach((layer, layerIndex) => {
       ctx.save()
@@ -117,6 +117,7 @@ class Network {
 
       layer.neurons.forEach((neuron, neuronIndex) => {
         ctx.beginPath()
+        ctx.shadowBlur= 0
         ctx.arc(layerIndex * this.spacingX, neuronIndex * this.spacingY, 7, 0, 2 * Math.PI)
         ctx.fill()
         ctx.closePath()
@@ -128,7 +129,7 @@ class Network {
           const opacity = ((connection.weight - 0.5) * 0.75) + 0.25
           ctx.strokeStyle = `rgba(0, 0, 0, ${opacity})`
           ctx.shadowBlur= 20 * connection.weight
-          ctx.shadowColor = 'black'
+          ctx.shadowColor = 'blue'
           ctx.lineWidth = 3
           ctx.stroke()
           ctx.closePath()
