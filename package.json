@@ -1,0 +1,19 @@
+{
+  "name": "back-propagation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andymantell/back-propagation.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andymantell/back-propagation/issues"
+  },
+  "homepage": "https://github.com/andymantell/back-propagation#readme"
+}
