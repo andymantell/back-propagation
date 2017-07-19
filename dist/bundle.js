@@ -79,7 +79,12 @@ canvas.height = window.innerHeight
 const ctx = canvas.getContext('2d')
 ctx.translate(canvas.width / 2, canvas.height / 2)
 
-const network = new __WEBPACK_IMPORTED_MODULE_0__modules_Network__["a" /* default */]([2, 5, 3])
+const network = new __WEBPACK_IMPORTED_MODULE_0__modules_Network__["a" /* default */]([3, 15, 10])
+
+network.input([1, 2, 3])
+
+network.forward()
+
 network.draw(ctx)
 
 
@@ -94,8 +99,8 @@ network.draw(ctx)
 class Network {
   constructor (layers) {
     this.layers = layers.map(neurons => new __WEBPACK_IMPORTED_MODULE_0__Layer__["a" /* default */](neurons))
-    this.spacingX = 300
-    this.spacingY = 150
+    this.spacingX = 200
+    this.spacingY = 40
 
     this.layers.forEach((layer, index) => {
       if (this.layers[index + 1]) {
@@ -117,8 +122,8 @@ class Network {
 
       layer.neurons.forEach((neuron, neuronIndex) => {
         ctx.beginPath()
-        ctx.shadowBlur= 0
-        ctx.arc(layerIndex * this.spacingX, neuronIndex * this.spacingY, 7, 0, 2 * Math.PI)
+        // ctx.shadowBlur= 0
+        ctx.arc(layerIndex * this.spacingX, neuronIndex * this.spacingY, 4, 0, 2 * Math.PI)
         ctx.fill()
         ctx.closePath()
 
@@ -128,12 +133,16 @@ class Network {
           ctx.lineTo((layerIndex + 1) * this.spacingX, (connectionIndex * this.spacingY) - ((this.layers[layerIndex + 1].neurons.length - layer.neurons.length) * this.spacingY / 2 ) )
           const opacity = ((connection.weight - 0.5) * 0.75) + 0.25
           ctx.strokeStyle = `rgba(0, 0, 0, ${opacity})`
-          ctx.shadowBlur= 20 * connection.weight
-          ctx.shadowColor = 'blue'
-          ctx.lineWidth = 3
+          // ctx.shadowBlur= 20 * connection.weight
+          // ctx.shadowColor = 'blue'
+          ctx.lineWidth = 1
           ctx.stroke()
           ctx.closePath()
         })
+
+        ctx.font = "12px Arial";
+        ctx.strokeStyle='rgb(255,0,0)'
+        ctx.strokeText(neuron.value, layerIndex * this.spacingX + 8, neuronIndex * this.spacingY);
 
       })
       
@@ -207,7 +216,12 @@ class Neuron {
   }
 
   forward () {
-    this.output = this.value * this.weight
+    const output = this.value * this.weight
+
+    this.connections.forEach(connection => {
+      const value = this.value * connection.weight
+      connection.targetNeuron.input(value)
+    })
   }
 }
 

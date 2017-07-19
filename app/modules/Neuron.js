@@ -15,7 +15,12 @@ class Neuron {
   }
 
   forward () {
-    this.output = this.value * this.weight
+    const output = this.value * this.weight
+
+    this.connections.forEach(connection => {
+      const value = this.value * connection.weight
+      connection.targetNeuron.input(value)
+    })
   }
 }
 
