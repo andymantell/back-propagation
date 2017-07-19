@@ -7,8 +7,8 @@ class Network {
     this.spacingY = 40
 
     this.layers.forEach((layer, index) => {
-      if (this.layers[index + 1]) {
-        layer.connect(this.layers[index + 1])
+      if (this.layers[index - 1]) {
+        layer.connect(this.layers[index - 1])
       }
     })
   }
@@ -26,7 +26,6 @@ class Network {
 
       layer.neurons.forEach((neuron, neuronIndex) => {
         ctx.beginPath()
-        // ctx.shadowBlur= 0
         ctx.arc(layerIndex * this.spacingX, neuronIndex * this.spacingY, 4, 0, 2 * Math.PI)
         ctx.fill()
         ctx.closePath()
@@ -34,11 +33,9 @@ class Network {
         neuron.connections.forEach((connection, connectionIndex) => {
           ctx.beginPath()
           ctx.moveTo(layerIndex * this.spacingX, neuronIndex * this.spacingY)
-          ctx.lineTo((layerIndex + 1) * this.spacingX, (connectionIndex * this.spacingY) - ((this.layers[layerIndex + 1].neurons.length - layer.neurons.length) * this.spacingY / 2 ) )
-          const opacity = ((connection.weight - 0.5) * 0.75) + 0.25
+          ctx.lineTo((layerIndex - 1) * this.spacingX, (connectionIndex * this.spacingY) - ((this.layers[layerIndex - 1].neurons.length - layer.neurons.length) * this.spacingY / 2 ) )
+          const opacity = ((connection.weight + 0.5) * 0.75) + 0.25
           ctx.strokeStyle = `rgba(0, 0, 0, ${opacity})`
-          // ctx.shadowBlur= 20 * connection.weight
-          // ctx.shadowColor = 'blue'
           ctx.lineWidth = 1
           ctx.stroke()
           ctx.closePath()
@@ -49,7 +46,7 @@ class Network {
         ctx.strokeText(neuron.value, layerIndex * this.spacingX + 8, neuronIndex * this.spacingY);
 
       })
-      
+
       ctx.restore()
     })
   }

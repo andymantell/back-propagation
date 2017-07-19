@@ -1,12 +1,13 @@
 class Neuron {
   constructor () {
     this.connections = []
+    this.value = 0
   }
 
   connect (targetNeuron) {
     this.connections.push({
       targetNeuron: targetNeuron,
-      weight: Math.random() + 0.5
+      weight: Math.random() - 0.5
     })
   }
 
@@ -15,12 +16,15 @@ class Neuron {
   }
 
   forward () {
-    const output = this.value * this.weight
+    if (this.connections.length === 0) {
+      return
+    }
 
-    this.connections.forEach(connection => {
-      const value = this.value * connection.weight
-      connection.targetNeuron.input(value)
-    })
+    this.value = this.sigmoid(this.connections.reduceRight((sum, connection) => (sum + connection.targetNeuron.value * connection.weight), 0))
+  }
+
+  sigmoid (value) {
+    return 1 / (1 + Math.exp(-value))
   }
 }
 
