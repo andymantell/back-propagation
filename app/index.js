@@ -5,12 +5,25 @@ canvas.width = window.innerWidth
 canvas.height = window.innerHeight
 
 const ctx = canvas.getContext('2d')
-ctx.translate(canvas.width / 2, canvas.height / 2)
 
-const network = new Network([3, 15, 10])
+const network = new Network([5, 10, 8])
 
-network.input([1, 2, 3])
+network.input([1, 2, 3, 4, 5])
 
-network.forward()
+var iteration = 0
 
-network.draw(ctx)
+function train () {
+
+  network.forward()
+  network.train([1, 2, 3, 4, 1, 2, 3, 4])
+
+  setTimeout(train)
+
+  if (iteration % 100) {
+    network.draw(ctx, canvas.width, canvas.height)
+  }
+
+  iteration++
+}
+
+train()

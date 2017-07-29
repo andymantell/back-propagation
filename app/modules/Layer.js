@@ -2,6 +2,7 @@ import Neuron from './Neuron'
 
 class Layer {
   constructor (neurons) {
+    this.outputLayer = false
     this.neurons = []
     for (var i = 0; i < neurons; i++) {
       this.neurons.push(new Neuron())
@@ -12,6 +13,10 @@ class Layer {
     this.neurons.forEach(neuron => {
       targetLayer.neurons.forEach(targetNeuron => {
         neuron.connect(targetNeuron)
+
+        if (this.outputLayer) {
+          neuron.outputNeuron = true
+        }
       })
     })
   }
