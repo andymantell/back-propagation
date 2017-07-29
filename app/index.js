@@ -17,7 +17,9 @@ function train () {
   network.forward()
   network.train([1, 2, 3, 4, 1, 2, 3, 4])
 
-  setTimeout(train)
+  if(iteration < 1000) {
+    setTimeout(train)
+  }
 
   if (iteration % 100) {
     network.draw(ctx, canvas.width, canvas.height)
@@ -27,3 +29,15 @@ function train () {
 }
 
 train()
+
+// setInterval(function () {
+//   network.input([5, 5, 5, 5, 5])
+//   network.forward()
+//   network.draw(ctx, canvas.width, canvas.height)
+
+//   setTimeout(function () {
+//     network.input([1, 2, 3, 4, 5])
+//     network.forward()
+//     network.draw(ctx, canvas.width, canvas.height)
+//   }, 2500)
+// }, 5000)
