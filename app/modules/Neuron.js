@@ -29,7 +29,6 @@ class Neuron {
   }
 
   sigmoid (value) {
-    // return value
     return 1 / (1 + Math.exp(-value))
   }
 
