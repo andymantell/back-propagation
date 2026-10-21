@@ -23,10 +23,14 @@ class Network {
     this.layers.forEach(layer => layer.forward())
   }
 
-  train (values) {
-    this.layers[this.layers.length - 1].neurons.forEach((neuron, index) => {
-      neuron.train(values[index])
-    })
+  // Work backwards from the output layer so that each layer has received the
+  // summed error from the layer above before it updates its own weights
+  train (values, learningRate = 0.1) {
+    for (let i = this.layers.length - 1; i > 0; i--) {
+      this.layers[i].neurons.forEach((neuron, index) => {
+        neuron.train(learningRate, values[index])
+      })
+    }
   }
 
   draw (ctx, width, height) {

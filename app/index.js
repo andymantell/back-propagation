@@ -20,7 +20,7 @@ function train () {
   setTimeout(train)
   // }
 
-  if (iteration % 10) {
+  if (iteration % 10 === 0) {
     network.draw(ctx, canvas.width, canvas.height)
   }
 
