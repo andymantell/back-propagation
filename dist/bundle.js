@@ -92,7 +92,7 @@ function train () {
   setTimeout(train)
   // }
 
-  if (iteration % 10) {
+  if (iteration % 10 === 0) {
     network.draw(ctx, canvas.width, canvas.height)
   }
 
@@ -145,10 +145,14 @@ class Network {
     this.layers.forEach(layer => layer.forward())
   }
 
-  train (values) {
-    this.layers[this.layers.length - 1].neurons.forEach((neuron, index) => {
-      neuron.train(values[index])
-    })
+  // Work backwards from the output layer so that each layer has received the
+  // summed error from the layer above before it updates its own weights
+  train (values, learningRate = 0.1) {
+    for (let i = this.layers.length - 1; i > 0; i--) {
+      this.layers[i].neurons.forEach((neuron, index) => {
+        neuron.train(learningRate, values[index])
+      })
+    }
   }
 
   draw (ctx, width, height) {
@@ -260,6 +264,8 @@ class Neuron {
     this.connections = []
     this.value = 0
     this.outputNeuron = false
+    this.bias = Math.random() - 0.5
+    this.errorSum = 0
   }
 
   connect (targetNeuron) {
@@ -278,10 +284,12 @@ class Neuron {
       return
     }
 
+    const sum = this.connections.reduce((sum, connection) => (sum + connection.targetNeuron.value * connection.weight), this.bias)
+
     if (this.outputNeuron) {
-      this.value = this.connections.reduceRight((sum, connection) => (sum + connection.targetNeuron.value * connection.weight), 0)
+      this.value = sum
     } else {
-      this.value = this.sigmoid(this.connections.reduceRight((sum, connection) => (sum + connection.targetNeuron.value * connection.weight), 0))
+      this.value = this.sigmoid(sum)
     }
   }
 
@@ -289,17 +297,28 @@ class Neuron {
     return 1 / (1 + Math.exp(-value))
   }
 
-  train (expectedValue) {
+  train (learningRate, expectedValue) {
+    if (this.connections.length === 0) {
+      return
+    }
+
+    // Output neurons are linear, so their delta is just the error. Hidden
+    // neurons use the error summed from the layer above, scaled by the
+    // derivative of the sigmoid.
+    const delta = this.outputNeuron
+      ? expectedValue - this.value
+      : this.errorSum * this.value * (1 - this.value)
+
+    this.errorSum = 0
 
     this.connections.forEach(connection => {
-      const oldWeight = connection.weight
+      // Pass the error back using the weight before it is updated
+      connection.targetNeuron.errorSum += delta * connection.weight
 
-      // UPDATE WEIGHTS SOMEHOW!
-
-      connection.weight = connection.weight + 0.001 * (expectedValue - this.value)
-
-      connection.targetNeuron.train(this.value * oldWeight)
+      connection.weight += learningRate * delta * connection.targetNeuron.value
     })
+
+    this.bias += learningRate * delta
   }
 }
 
